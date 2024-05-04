@@ -15,4 +15,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"))
 app.use(bodyParser.json());
 
+import AdminRoutes from "./Routes/Admin.routes.js"
+
+app.use("/api/v1", AdminRoutes)
+
 export { app };
