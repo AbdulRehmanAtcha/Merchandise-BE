@@ -16,7 +16,9 @@ app.use(express.static("public"))
 app.use(bodyParser.json());
 
 import AdminRoutes from "./Routes/Admin.routes.js"
+import UserRoutes from "./Routes/user.routes.js"
 
-app.use("/api/v1", AdminRoutes)
+app.use("/api/v1/admin", AdminRoutes)
+app.use("/api/v1", UserRoutes)
 
 export { app };

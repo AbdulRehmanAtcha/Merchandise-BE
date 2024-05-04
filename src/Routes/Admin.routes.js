@@ -6,5 +6,5 @@ import { uploadImage } from "../Middlewares/multer.middleware.js";
 const router = Router();
 
 
-router.post("/admin/add-product", uploadImage.fields([{ name: "productImage", maxCount: 1 }]) ,AddProductHandler)
+router.post("/add-product", uploadImage.fields([{ name: "productImage", maxCount: 1 }]) ,AddProductHandler)
 export default router;
