@@ -19,3 +19,29 @@ export const AddProductHandler = asyncHandler(async (req, res) => {
     await ProductModel.create(product)
     return res.status(200).json(new ApiResponse(200, product, "Product Created Successfully"))
 })
+
+
+export const AddProductStock = asyncHandler(async (req, res) => {
+    const { productId, quantity } = req.body;
+    const product = await ProductModel.findByIdAndUpdate(
+        { _id: productId },
+        { $inc: { productQuantity: quantity } },
+        { new: true }
+    );
+
+    return res.status(200).json(new ApiResponse(200, product, "Product Created Successfully"));
+});
+
+
+export const DeleteProductHandler = asyncHandler(async (req, res) => {
+    const { productId } = req.body
+    await ProductModel.findByIdAndUpdate(
+        { _id: productId },
+        {
+
+            isDeleted: true
+        },
+        { new: true }
+    )
+    return res.status(200).json(new ApiResponse(200, {}, "Product deleted successfully"))
+})

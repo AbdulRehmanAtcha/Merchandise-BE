@@ -20,6 +20,10 @@ const ProductSchema = new Schema({
         type: String,
         // required: [true, "Product Image is required"],
     },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
 
 },
     {
