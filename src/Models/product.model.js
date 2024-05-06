@@ -14,7 +14,7 @@ const ProductSchema = new Schema({
     productQuantity: {
         type: Number,
         required: [true, "Product Quantity is required"],
-        min: 1
+        min: 0
     },
     productImage: {
         type: String,
