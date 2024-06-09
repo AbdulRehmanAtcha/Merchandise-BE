@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { AddProductHandler, AddProductStock, DeleteProductHandler, DiscountHandler } from "../Controllers/Admin.controller.js";
+import { AddProductHandler, AddProductStock, DeleteProductHandler, DiscountHandler, ExpenseHandler, LedgerHandler, SheetHandler } from "../Controllers/Admin.controller.js";
 import { uploadImage } from "../Middlewares/multer.middleware.js";
 
 
@@ -10,4 +10,7 @@ router.post("/add-product", uploadImage.fields([{ name: "productImage", maxCount
 router.put("/add-stock", AddProductStock)
 router.delete("/delete-product", DeleteProductHandler)
 router.post("/discount", DiscountHandler)
+router.post("/expense", ExpenseHandler)
+router.get("/sheet", SheetHandler)
+router.get("/ledger", LedgerHandler)
 export default router;

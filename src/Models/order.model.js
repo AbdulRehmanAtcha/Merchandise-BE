@@ -20,6 +20,8 @@ const orderSchema = new Schema({
         default: 0,
     },
 },
-    { timeStamps: true })
+{
+    timestamps: true
+})
 
 export const OrderModel = mongoose.model("Order", orderSchema)

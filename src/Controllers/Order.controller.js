@@ -3,6 +3,7 @@ import { ApiResponse } from "../Utils/ApiResponse.js"
 import { ApiError } from "../Utils/ApiError.js"
 import { OrderModel } from "../Models/order.model.js";
 import { ProductModel } from "../Models/product.model.js";
+import { SheetModel } from "../Models/sheet.model.js";
 
 
 export const OrderHandler = asyncHandler(async (req, res) => {
@@ -22,7 +23,8 @@ export const OrderHandler = asyncHandler(async (req, res) => {
 
     const order = { cart, totalItems, totalPrice };
 
-    await OrderModel.create(order);
-    console.log(req?.body);
+    const item = await OrderModel.create(order);
+    const price = await OrderModel.findById(item?._id)
+    await SheetModel.create({ totalPrice: price?.totalPrice })
     return res.status(200).json(new ApiResponse(200, {}, "Order Created Successfully"));
 });

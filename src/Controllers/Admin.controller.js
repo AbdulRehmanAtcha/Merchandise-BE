@@ -3,6 +3,9 @@ import { ApiResponse } from "../Utils/ApiResponse.js"
 import { ApiError } from "../Utils/ApiError.js"
 import { CloudinaryUploader } from "../Utils/cloudinary.js";
 import { ProductModel } from "../Models/product.model.js";
+import { ExpenseModel } from "../Models/expense.model.js";
+import { OrderModel } from "../Models/order.model.js";
+import { SheetModel } from "../Models/sheet.model.js";
 
 export const AddProductHandler = asyncHandler(async (req, res) => {
     const { productName, productBasePrice, productQuantity } = req.body
@@ -60,3 +63,44 @@ export const DiscountHandler = asyncHandler(async (req, res) => {
     await product.save();
     return res.status(200).json(new ApiResponse(200, product, "Discount Added Successfully"))
 })
+
+
+export const ExpenseHandler = asyncHandler(async (req, res) => {
+    const { expenseCost, method, description } = req?.body
+
+    const obj = { expenseCost, method, description }
+    await SheetModel.create(obj)
+    return res.status(200).json(new ApiResponse(200, {}, "Expense Added"))
+
+})
+
+
+export const SheetHandler = asyncHandler(async (req, res) => {
+    const result = await SheetModel.find().sort({ createdAt: -1 })
+    return res.status(200).json(new ApiResponse(200, result, "Sheet Send Successfully"))
+})
+
+
+export const LedgerHandler = asyncHandler(async (req, res) => {
+    const sheets = await SheetModel.find().sort({ createdAt: -1 });
+    const ledgerEntries = sheets.map(sheet => {
+        if (sheet.totalPrice) {
+            return {
+                account: "Sales",
+                amount: sheet.totalPrice,
+                type: "Credit",
+                date: sheet.createdAt,
+                description: `Order ID: ${sheet._id}`,
+            };
+        } else {
+            return {
+                account: "Expenses",
+                amount: sheet.expenseCost,
+                type: sheet.method,
+                date: sheet.createdAt,
+                description: sheet.description,
+            };
+        }
+    });
+    return res.status(200).json(new ApiResponse(200, ledgerEntries, "Ledger Entries Retrieved Successfully"));
+});
