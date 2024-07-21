@@ -11,6 +11,11 @@ const ProductSchema = new Schema({
         required: [true, "Product Price is required"],
         min: 1
     },
+    productSellPrice: {
+        type: Number,
+        required: [true, "Product Price is required"],
+        min: 1
+    },
     productDiscount: {
         type: Number,
         default: 0
@@ -18,7 +23,7 @@ const ProductSchema = new Schema({
     productFinalPrice: {
         type: Number,
         default: function () {
-            return this.productBasePrice || 0;
+            return this.productSellPrice || 0;
         }
     },
     productQuantity: {

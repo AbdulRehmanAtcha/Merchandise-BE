@@ -19,6 +19,10 @@ const orderSchema = new Schema({
         type: Number,
         default: 0,
     },
+    totalProfit: {
+        // type: Number,
+        // default: 0,
+    },
 },
 {
     timestamps: true

@@ -8,8 +8,8 @@ import { OrderModel } from "../Models/order.model.js";
 import { SheetModel } from "../Models/sheet.model.js";
 
 export const AddProductHandler = asyncHandler(async (req, res) => {
-    const { productName, productBasePrice, productQuantity } = req.body
-    if ([productName, productBasePrice, productQuantity].some((item) => !item)) {
+    const { productName, productBasePrice, productQuantity, productSellPrice } = req.body
+    if ([productName, productBasePrice, productQuantity, productSellPrice].some((item) => !item)) {
         throw new ApiError(401, "All Fields are required")
     }
 
@@ -18,7 +18,7 @@ export const AddProductHandler = asyncHandler(async (req, res) => {
     }
     const imgUpload = await CloudinaryUploader(req.files?.productImage ? req.files?.productImage[0]?.path : null)
 
-    const product = { productName, productBasePrice, productQuantity, productImage: imgUpload?.url }
+    const product = { productName, productBasePrice, productQuantity, productImage: imgUpload?.url, productSellPrice }
     await ProductModel.create(product)
     return res.status(200).json(new ApiResponse(200, product, "Product Created Successfully"))
 })
@@ -55,11 +55,11 @@ export const DiscountHandler = asyncHandler(async (req, res) => {
     if (!productDiscount || !productId) {
         throw new ApiError(401, "All Fields are required")
     }
-    if (productDiscount === 0) {
+    if (productDiscount == 0) {
         throw new ApiError(401, "Product Discount can't be 0")
     }
     const product = await ProductModel.findByIdAndUpdate({ _id: productId }, { productDiscount: productDiscount }, { new: true }).select("-isDeleted -updatedAt")
-    product.productFinalPrice = product.productBasePrice - (product.productBasePrice * (product.productDiscount / 100))
+    product.productFinalPrice = product.productSellPrice - (product.productSellPrice * (product.productDiscount / 100))
     await product.save();
     return res.status(200).json(new ApiResponse(200, product, "Discount Added Successfully"))
 })
@@ -104,3 +104,16 @@ export const LedgerHandler = asyncHandler(async (req, res) => {
     });
     return res.status(200).json(new ApiResponse(200, ledgerEntries, "Ledger Entries Retrieved Successfully"));
 });
+
+
+export const RemoveDiscountHandler = asyncHandler(async (req, res) => {
+    const { prodId } = req?.body;
+    if (!prodId) {
+        throw new ApiError(401, "Product Id Is Required")
+    }
+    const product = await ProductModel.findByIdAndUpdate({ _id: prodId }, { productDiscount: 0 }, { new: true }).select("-isDeleted -updatedAt")
+    product.productFinalPrice = product.productSellPrice - (product.productSellPrice * (product.productDiscount / 100))
+    await product.save();
+    return res.status(200).json(new ApiResponse(200, product, "Discount Removed Successfully"))
+
+})

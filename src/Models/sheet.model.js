@@ -6,6 +6,9 @@ const sheetSchema = new Schema({
     totalPrice: {
         type: Number
     },
+    totalProfit: {
+        type: Number
+    },
 
     expenseCost: {
         type: Number
